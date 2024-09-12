@@ -1,0 +1,19 @@
+{
+  "name": "bvd103-ass1",
+  "version": "1.0.0",
+  "description": "This is a template repository for the first assignment in BVD 103 at McMaster Continuing Education.",
+  "main": "index.ts",
+  "scripts": {
+    "start-server": "tsx ./index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@koa/cors": "^5.0.0",
+    "@types/koa": "^2.15.0",
+    "koa": "^2.15.3",
+    "typescript": "^5.6.2"
+  }
+}
