@@ -1,3 +1,4 @@
+import { formatDiagnostic } from "typescript";
 import bookList from "../mcmasteful-book-list.json";
 
 export interface Book {
@@ -14,10 +15,25 @@ async function listBooks(filters?: Array<{from?: number, to?: number}>) : Promis
     const books: Book[] = [];
 
     for (let n=0; n<bookList.length; n++){
-        const Larry: Book = {name: bookList[n].name, author: bookList[n].author, description: bookList[n].description, price: bookList[n].price, image: bookList[n].image};
-        books.push(Larry);
+            const book: Book = {name: bookList[n].name, author: bookList[n].author, description: bookList[n].description, price: bookList[n].price, image: bookList[n].image};
+            books.push(book);
     }
-    return books;
+    
+    return new Promise((resolve) => {
+        let bookFilter = books;
+    
+        if (filters && filters.length > 0) {
+          bookFilter = bookFilter.filter((book) => {
+            return filters.some((filter) => {
+              const { from = 0, to = Infinity } = filter;
+              return book.price >= from && book.price <= to;
+            });
+          });
+        }
+    
+        resolve(bookFilter);
+      });
+
 }
 
 const assignment = "assignment-1";
