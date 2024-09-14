@@ -23,17 +23,13 @@ async function listBooks(filters?: Array<{from?: number, to?: number}>) : Promis
                     if(currentFilter.from == 0 && currentFilter.to == Infinity){
                         books.push(book);
                     }
-                    if(currentFilter.from && book.price > currentFilter.from){
+                    else if(currentFilter.from && book.price > currentFilter.from || currentFilter.from == 0){
                         if(currentFilter.to && book.price < currentFilter.to){
                             books.push(book);
                         }
                     }
                 }
-            }
-            else{
-                books.push(book);
-            }
-            
+            }           
     }
 
     return books;
