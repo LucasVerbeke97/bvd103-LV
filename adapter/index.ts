@@ -34,6 +34,7 @@ app.use(async (ctx: { query: { minPrice: string; maxPrice: string; }; body: stri
 
     const books = await assignment.listBooks([{from: minPrice, to: maxPrice}]);
 
+
     books.forEach((book) => {
         bookList += `
       <tr>

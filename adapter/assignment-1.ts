@@ -23,17 +23,21 @@ async function listBooks(filters?: Array<{from?: number, to?: number}>) : Promis
                     if(currentFilter.from == 0 && currentFilter.to == Infinity){
                         books.push(book);
                     }
-                    if(currentFilter.from && book.price > currentFilter.from || currentFilter.from == 0){
+                    if(currentFilter.from && book.price > currentFilter.from){
                         if(currentFilter.to && book.price < currentFilter.to){
                             books.push(book);
                         }
                     }
                 }
             }
+            else{
+                books.push(book);
+            }
             
     }
 
     return books;
+
 }
 
 const assignment = "assignment-1";
