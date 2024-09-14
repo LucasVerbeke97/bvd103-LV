@@ -16,24 +16,24 @@ async function listBooks(filters?: Array<{from?: number, to?: number}>) : Promis
 
     for (let n=0; n<bookList.length; n++){
             const book: Book = {name: bookList[n].name, author: bookList[n].author, description: bookList[n].description, price: bookList[n].price, image: bookList[n].image};
-            books.push(book);
-    }
-    
-    return new Promise((resolve) => {
-        let bookFilter = books;
-    
-        if (filters && filters.length > 0) {
-          bookFilter = bookFilter.filter((book) => {
-            return filters.some((filter) => {
-              const { from = 0, to = Infinity } = filter;
-              return book.price >= from && book.price <= to;
-            });
-          });
-        }
-    
-        resolve(bookFilter);
-      });
+            if (filters && filters.length>0){
+                for (let i=0; i<filters.length; i++){
+                    const currentFilter = filters[i];
 
+                    if(currentFilter.from == 0 && currentFilter.to == Infinity){
+                        books.push(book);
+                    }
+                    if(currentFilter.from && book.price > currentFilter.from || currentFilter.from == 0){
+                        if(currentFilter.to && book.price < currentFilter.to){
+                            books.push(book);
+                        }
+                    }
+                }
+            }
+            
+    }
+
+    return books;
 }
 
 const assignment = "assignment-1";
