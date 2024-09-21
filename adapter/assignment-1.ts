@@ -1,5 +1,5 @@
 import { formatDiagnostic } from "typescript";
-import bookList from "../mcmasteful-book-list.json";
+import * as fs from 'fs';
 
 export interface Book {
     name: string,
@@ -12,6 +12,9 @@ export interface Book {
 
 // If you have multiple filters, a book matching any of them is a match.
 async function listBooks(filters?: Array<{from?: number, to?: number}>) : Promise<Book[]>{
+    const jsonString = fs.readFileSync("/workspaces/bvd103-ass1/mcmasteful-book-list.json", 'utf-8');
+    const bookList: Book[] = JSON.parse(jsonString);
+
     const books: Book[] = [];
 
     for (let n=0; n<bookList.length; n++){

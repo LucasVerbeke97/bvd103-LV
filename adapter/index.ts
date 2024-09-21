@@ -27,23 +27,18 @@ router.get('/', async (ctx: { query: { minPrice: string; maxPrice: string; }; bo
         <th>Title</th><th>Author</th><th>Description</th><th>Cover</th>
         </tr></thead><tbody>`;
 
-    try {
-        const books = await assignment.listBooks([{ from: minPrice, to: maxPrice }]);
-        books.forEach((book) => {
-            bookList += `
-            <tr>
-                <td>${book.name}</td>
-                <td>${book.author}</td>
-                <td>${book.description}</td>
-                <td><img src="${book.image}" alt="Book Cover" width="200" height="300">
-                <center>$${book.price}</center></td>
-            </tr>`;
+    let books = await assignment.listBooks([{ from: minPrice, to: maxPrice }]);
+    books.forEach((book) => {
+        bookList += `
+        <tr>
+            <td>${book.name}</td>
+            <td>${book.author}</td>
+            <td>${book.description}</td>
+            <td><img src="${book.image}" alt="Book Cover" width="200" height="300">
+            <center>$${book.price}</center></td>
+        </tr>`;
         });
-        bookList += `</tbody></table>`;
-    } catch (error) {
-        console.error('Error fetching books:', error);
-        bookList += `<tr><td colspan="4">Error fetching books</td></tr></tbody></table>`;
-    }
+    bookList += `</tbody></table>`;
 
     const addBook = `
         <h1>Add New Book</h1>
