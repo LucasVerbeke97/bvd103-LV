@@ -1,4 +1,6 @@
 import assignment1 from "./assignment-1";
+import * as fs from 'fs';
+
 
 export type BookID = string;
 
@@ -20,7 +22,23 @@ async function createOrUpdateBook(book: Book): Promise<BookID> {
 }
 
 async function removeBook(book: BookID): Promise<void> {
-    throw new Error("Todo")
+    let jsonString = fs.readFileSync('/workspaces/bvd103-ass1/mcmasteful-book-list.json', 'utf-8');
+
+    let books = JSON.parse(jsonString);
+
+    for(let i=0; i<books.length; i++){
+        if(books[i].id == book){
+           delete books[i].name;
+           delete books[i].author;
+           delete books[i].description;
+           delete books[i].price;
+           delete books[i].image;
+        }
+    }
+
+    let newJson = JSON.stringify(books, null, 2);
+
+    fs.writeFileSync('/workspaces/bvd103-ass1/mcmasteful-book-list.json', newJson, 'utf-8');
 }
 
 const assignment = "assignment-2";

@@ -15,6 +15,7 @@ async function listBooks(filters?: Array<{from?: number, to?: number}>) : Promis
     const books: Book[] = [];
 
     for (let n=0; n<bookList.length; n++){
+        if(bookList[n].name){
             const book: Book = {name: bookList[n].name, author: bookList[n].author, description: bookList[n].description, price: bookList[n].price, image: bookList[n].image};
             if (filters && filters.length>0){
                 for (let i=0; i<filters.length; i++){
@@ -29,7 +30,8 @@ async function listBooks(filters?: Array<{from?: number, to?: number}>) : Promis
                         }
                     }
                 }
-            }           
+            } 
+        }      
     }
 
     return books;
