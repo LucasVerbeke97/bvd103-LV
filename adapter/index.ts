@@ -34,7 +34,17 @@ router.get('/', async (ctx: { query: { minPrice: string; maxPrice: string; }; bo
             <td>${book.name}</td>
             <td>${book.author}</td>
             <td>${book.description}</td>
-            <td><img src="${book.image}" alt="Book Cover" width="200" height="300">
+            <td>
+        `
+        if(book.id){
+            bookList+=`
+            ID: ${book.id}
+            `;
+            console.log(book.id);
+        }
+
+        bookList+=`
+            <img src="${book.image}" alt="Book Cover" width="200" height="300">
             <center>$${book.price}</center></td>
         </tr>`;
         });

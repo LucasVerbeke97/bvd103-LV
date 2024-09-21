@@ -70,5 +70,21 @@
     "description": "J. R. R. Tolkien's essay 'Beowulf: The Monsters and the Critics', initially delivered as the Sir Israel Gollancz Memorial Lecture at the British Academy in 1936, and first published as a paper in the Proceedings of the British Academy that same year, is regarded as a formative work in modern Beowulf studies. In it, Tolkien speaks against critics who play down the monsters in the poem, namely Grendel, Grendel's mother, and the dragon, in favour of using Beowulf solely as a source for Anglo-Saxon history.",
     "price": 19.95,
     "image": "https://upload.wikimedia.org/wikipedia/en/thumb/5/51/Beowulf_The_Monsters_and_the_Critics_1936_title_page.jpg/220px-Beowulf_The_Monsters_and_the_Critics_1936_title_page.jpg"
+  },
+  {
+    "id": "3",
+    "name": "fart",
+    "author": "poo",
+    "description": "adwdasd",
+    "price": 1,
+    "image": "https://m.media-amazon.com/images/I/71Qde+ZerdL._SL1500_.jpg"
+  },
+  {
+    "id": "4",
+    "name": "Royal Regiment Of Canada",
+    "author": "R Regt C",
+    "description": "Ready Aye Ready",
+    "price": 100,
+    "image": "https://upload.wikimedia.org/wikipedia/en/5/55/Royal_Regiment_of_Canada.jpg"
   }
 ]

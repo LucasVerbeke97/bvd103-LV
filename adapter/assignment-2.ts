@@ -21,8 +21,22 @@ async function createOrUpdateBook(book: Book): Promise<BookID> {
     let jsonString = fs.readFileSync('/workspaces/bvd103-ass1/mcmasteful-book-list.json', 'utf-8');
 
     let books = JSON.parse(jsonString);
+    
+    let hasBook = false;
 
-    books.push(book);
+    for(let i=0; i<books.length; i++){
+        if(books[i].id == book.id){
+            hasBook = true;
+            
+            books[i] = {id: book.id, name: book.name, author: book.author, description: book.description, price: book.price, image: book.image};
+        }
+    }
+
+
+    if(!hasBook){
+        books.push(book);
+    }
+
 
     let newJson = JSON.stringify(books, null, 2);
 
