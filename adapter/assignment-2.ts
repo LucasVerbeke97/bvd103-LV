@@ -20,8 +20,18 @@ async function listBooks(filters?: Array<{from?: number, to?: number}>) : Promis
 async function createOrUpdateBook(book: Book): Promise<BookID> {
     let jsonString = fs.readFileSync('/workspaces/bvd103-ass1/mcmasteful-book-list.json', 'utf-8');
 
-    throw new Error("Todo")
+    let books = JSON.parse(jsonString);
 
+    books.push(book);
+
+    let newJson = JSON.stringify(books, null, 2);
+
+    fs.writeFileSync('/workspaces/bvd103-ass1/mcmasteful-book-list.json', newJson, 'utf-8');
+
+    if(book.id)
+        return book.id;
+    else
+        return '';
 }
 
 async function removeBook(book: BookID): Promise<void> {
