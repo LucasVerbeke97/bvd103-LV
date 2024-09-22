@@ -1,6 +1,12 @@
 import assignment1 from "./assignment-1";
 import * as fs from 'fs';
 
+const {MongoClient} = require("mongodb");
+
+const uri = "mongodb+srv://micluc97:Poop23@mcmasterful-books.s6a4e.mongodb.net/?retryWrites=true&w=majority&appName=mcmasterful-books";
+
+const client = new MongoClient(uri);
+
 
 export type BookID = string;
 
@@ -18,29 +24,32 @@ async function listBooks(filters?: Array<{from?: number, to?: number}>) : Promis
 }
 
 async function createOrUpdateBook(book: Book): Promise<BookID> {
-    let jsonString = fs.readFileSync('/workspaces/bvd103-ass1/mcmasteful-book-list.json', 'utf-8');
 
-    let books = JSON.parse(jsonString);
-    
+    const database = client.db('McMasterful-Books');
+    const collection = database.collection('Books');
+
+    const books = await collection.find({}).toArray();
+
     let hasBook = false;
 
     for(let i=0; i<books.length; i++){
         if(books[i].id == book.id){
-            hasBook = true;
-            
-            books[i] = {id: book.id, name: book.name, author: book.author, description: book.description, price: book.price, image: book.image};
+            hasBook = true;            
+            let updateBook = {id: book.id, name: book.name, author: book.author, description: book.description, price: book.price, image: book.image};
+
+            //put logic to update book here
+            collection.updateOne(updateBook);
+            //not working yet >:(
+            console.log('book updated');
         }
     }
 
-
     if(!hasBook){
-        books.push(book);
+        
+        collection.insertOne(book);
+
+        console.log('book added');
     }
-
-
-    let newJson = JSON.stringify(books, null, 2);
-
-    fs.writeFileSync('/workspaces/bvd103-ass1/mcmasteful-book-list.json', newJson, 'utf-8');
 
     if(book.id)
         return book.id;
@@ -49,20 +58,20 @@ async function createOrUpdateBook(book: Book): Promise<BookID> {
 }
 
 async function removeBook(book: BookID): Promise<void> {
-    let jsonString = fs.readFileSync('/workspaces/bvd103-ass1/mcmasteful-book-list.json', 'utf-8');
 
-    let books = JSON.parse(jsonString);
+    const database = client.db('McMasterful-Books');
+    const collection = database.collection('Books');
 
+    const books = await collection.find({}).toArray();
+    
     for(let i=0; i<books.length; i++){
         if(books[i].id == book){
-            books.splice(i, 1); 
+            collection.deleteOne({id: book});
+            console.log('book removed');
+            //logic to remove book here
             break;
         }
     }
-
-    let newJson = JSON.stringify(books, null, 2);
-
-    fs.writeFileSync('/workspaces/bvd103-ass1/mcmasteful-book-list.json', newJson, 'utf-8');
 }
 
 const assignment = "assignment-2";
