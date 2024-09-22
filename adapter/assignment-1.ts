@@ -1,6 +1,12 @@
 import { formatDiagnostic } from "typescript";
 import * as fs from 'fs';
 
+const {MongoClient} = require("mongodb");
+
+const uri = "mongodb+srv://micluc97:Poop23@mcmasterful-books.s6a4e.mongodb.net/?retryWrites=true&w=majority&appName=mcmasterful-books";
+
+const client = new MongoClient(uri);
+
 export interface Book {
     name: string,
     author: string,
@@ -12,8 +18,10 @@ export interface Book {
 
 // If you have multiple filters, a book matching any of them is a match.
 async function listBooks(filters?: Array<{from?: number, to?: number}>) : Promise<Book[]>{
-    const jsonString = fs.readFileSync("/workspaces/bvd103-ass1/mcmasteful-book-list.json", 'utf-8');
-    const bookList: Book[] = JSON.parse(jsonString);
+    const database = client.db('McMasterful-Books');
+    const collection = database.collection('Books');
+
+    const bookList = await collection.find({}).toArray();
 
     const books: Book[] = [];
 
