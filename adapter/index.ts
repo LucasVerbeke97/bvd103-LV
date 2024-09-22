@@ -1,7 +1,7 @@
 import Koa from 'koa';
 import Router from 'koa-router';
 import bodyParser from 'koa-bodyparser';
-import assignment from './assignment-2'; 
+import assignment from './assignment-2';
 
 const app = new Koa();
 const router = new Router();
@@ -12,6 +12,7 @@ router.get('/', async (ctx: { query: { minPrice: string; maxPrice: string; }; bo
     const minPrice = parseFloat(ctx.query.minPrice as string) || 0;
     const maxPrice = parseFloat(ctx.query.maxPrice as string) || Infinity;
 
+    //form for filtering books
     let form = `<h1>Books</h1>
         <form method="get">
         <label for="minPrice">Min Price:</label>
@@ -22,6 +23,7 @@ router.get('/', async (ctx: { query: { minPrice: string; maxPrice: string; }; bo
         </form>
     `;
 
+    //creating book table
     let bookList = `<table border="1" cellpadding="5" cellspacing="0">
         <thead><tr>
         <th>Title</th><th>Author</th><th>Description</th><th>Cover</th>
@@ -35,12 +37,22 @@ router.get('/', async (ctx: { query: { minPrice: string; maxPrice: string; }; bo
             <td>${book.author}</td>
             <td>${book.description}</td>
             <td>
+        `
+
+        //checks if book id is not undefined then adds it if so
+        if(book.id){
+            bookList+=`
+            ID: ${book.id}
+            `
+        }
+        bookList+=`
             <img src="${book.image}" alt="Book Cover" width="200" height="300">
             <center>$${book.price}</center></td>
         </tr>`;
         });
-    bookList += `</tbody></table>`;
+    bookList += `</tbody></table>`; //finishing book table
 
+    //form to add or modify book
     const addBook = `
         <h1>Add New Book</h1>
         <form action="/add-book" method="post">
@@ -50,9 +62,10 @@ router.get('/', async (ctx: { query: { minPrice: string; maxPrice: string; }; bo
             <label for="description">Description:</label><textarea id="description" name="description" required></textarea>
             <label for="price">Price:</label><input type="number" id="price" name="price" step="0.01" required>
             <label for="link">Link:</label><input type="url" id="link" name="link" required>
-            <button type="submit">Add Book</button>
+            <button type="submit">Add/Update Book</button>
         </form>`;
 
+    //form for removing book
     const removeBook = `
         <h1>Remove Book</h1>
         <form action="/remove-book" method="post">
@@ -63,7 +76,7 @@ router.get('/', async (ctx: { query: { minPrice: string; maxPrice: string; }; bo
     ctx.body = form + bookList + addBook + removeBook;
 });
 
-
+//calls function to add or update book the redirects to /
 router.post('/add-book', async (ctx: { request: { body: { id: any; name: any; author: any; description: any; price: any; link: any; }; }; redirect: (arg0: string) => void; body: string; }) => {
     const { id, name, author, description, price, link } = ctx.request.body;
     try {
@@ -82,7 +95,7 @@ router.post('/add-book', async (ctx: { request: { body: { id: any; name: any; au
     }
 });
 
-
+//calls function to delete book the redirects to /
 router.post('/remove-book', async (ctx: { request: { body: { id: any; }; }; redirect: (arg0: string) => void; body: string; }) => {
     const { id } = ctx.request.body;
     try {

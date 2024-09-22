@@ -1,12 +1,21 @@
 import { formatDiagnostic } from "typescript";
 
+require('dotenv').config();
+
 const {MongoClient} = require("mongodb");
 
-const uri = "mongodb+srv://micluc97:Poop23@mcmasterful-books.s6a4e.mongodb.net/?retryWrites=true&w=majority&appName=mcmasterful-books";
+const uri = process.env.MONGODB_URI || "";
+
+if (!uri) {
+    throw new Error('MongoDB URI not found in environment variables.');
+}
 
 const client = new MongoClient(uri);
 
+export type BookID = string;
+
 export interface Book {
+    id?: BookID,
     name: string,
     author: string,
     description: string,
@@ -27,6 +36,9 @@ async function listBooks(filters?: Array<{from?: number, to?: number}>) : Promis
     for (let n=0; n<bookList.length; n++){
         if(bookList[n].name){
             const book: Book = {name: bookList[n].name, author: bookList[n].author, description: bookList[n].description, price: bookList[n].price, image: bookList[n].image};
+            if(bookList[n].id){
+                book.id = bookList[n].id;
+            }
             if (filters && filters.length>0){
                 for (let i=0; i<filters.length; i++){
                     const currentFilter = filters[i];

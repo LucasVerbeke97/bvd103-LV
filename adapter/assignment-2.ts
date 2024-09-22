@@ -1,11 +1,15 @@
 import assignment1 from "./assignment-1";
 
+require('dotenv').config();//configs the dotenv file
+
 const {MongoClient} = require("mongodb");
+const uri = process.env.MONGODB_URI || "";//gets link to db from dotenv
 
-const uri = "mongodb+srv://micluc97:Poop23@mcmasterful-books.s6a4e.mongodb.net/?retryWrites=true&w=majority&appName=mcmasterful-books";
+if (!uri) {
+    throw new Error('MongoDB URI not found in environment variables.');
+}
 
-const client = new MongoClient(uri);
-
+const client = new MongoClient(uri);//connects to the mongoDB
 
 export type BookID = string;
 
@@ -24,12 +28,13 @@ async function listBooks(filters?: Array<{from?: number, to?: number}>) : Promis
 
 async function createOrUpdateBook(book: Book): Promise<BookID> {
 
+    //connects to db
     const database = client.db('McMasterful-Books');
     const collection = database.collection('Books');
 
-    const bookExists = await collection.findOne({id: book.id});
+    const bookExists = await collection.findOne({id: book.id});//checks if book existas and stores it in variable
 
-    if(bookExists){
+    if(bookExists){//checks if book is not undefined so that it can update
         const bookUpdate = {
             $set: {
                 name: book.name,
@@ -41,28 +46,20 @@ async function createOrUpdateBook(book: Book): Promise<BookID> {
         };
 
         await collection.updateOne({ id: book.id}, bookUpdate);
-        console.log('Book updated');
-    }else{
+    }else{//if book is undefine new book is created
         await collection.insertOne(book);
-        console.log('Book added');
     }
     return book.id || '';
 }
 
 async function removeBook(book: BookID): Promise<void> {
 
+    //connects to db
     const database = client.db('McMasterful-Books');
     const collection = database.collection('Books');
 
-    const books = await collection.find({}).toArray();
-    
-    for(let i=0; i<books.length; i++){
-        if(books[i].id == book){
-            collection.deleteOne({id: book});
-            console.log('book removed');
-            break;
-        }
-    }
+    //matches bookid and removes it
+    await collection.deleteOne({id: book});
 }
 
 const assignment = "assignment-2";
