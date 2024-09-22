@@ -1,5 +1,4 @@
 import { formatDiagnostic } from "typescript";
-import * as fs from 'fs';
 
 const {MongoClient} = require("mongodb");
 

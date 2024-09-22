@@ -1,5 +1,4 @@
 import assignment1 from "./assignment-1";
-import * as fs from 'fs';
 
 const {MongoClient} = require("mongodb");
 
@@ -28,33 +27,26 @@ async function createOrUpdateBook(book: Book): Promise<BookID> {
     const database = client.db('McMasterful-Books');
     const collection = database.collection('Books');
 
-    const books = await collection.find({}).toArray();
+    const bookExists = await collection.findOne({id: book.id});
 
-    let hasBook = false;
+    if(bookExists){
+        const bookUpdate = {
+            $set: {
+                name: book.name,
+                author: book.author,
+                description: book.description,
+                price: book.price,
+                image: book.image
+            }
+        };
 
-    for(let i=0; i<books.length; i++){
-        if(books[i].id == book.id){
-            hasBook = true;            
-            let updateBook = {id: book.id, name: book.name, author: book.author, description: book.description, price: book.price, image: book.image};
-
-            //put logic to update book here
-            collection.updateOne(updateBook);
-            //not working yet >:(
-            console.log('book updated');
-        }
+        await collection.updateOne({ id: book.id}, bookUpdate);
+        console.log('Book updated');
+    }else{
+        await collection.insertOne(book);
+        console.log('Book added');
     }
-
-    if(!hasBook){
-        
-        collection.insertOne(book);
-
-        console.log('book added');
-    }
-
-    if(book.id)
-        return book.id;
-    else
-        return '';
+    return book.id || '';
 }
 
 async function removeBook(book: BookID): Promise<void> {
@@ -68,7 +60,6 @@ async function removeBook(book: BookID): Promise<void> {
         if(books[i].id == book){
             collection.deleteOne({id: book});
             console.log('book removed');
-            //logic to remove book here
             break;
         }
     }
