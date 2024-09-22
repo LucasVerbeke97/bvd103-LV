@@ -22,7 +22,8 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"rangav.vscode-thunder-client"
+				"rangav.vscode-thunder-client",
+				"mongodb.mongodb-vscode"
 			]
 		}
 	},
