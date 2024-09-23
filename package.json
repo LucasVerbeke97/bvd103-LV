@@ -19,5 +19,11 @@
     "koa-router": "^13.0.1",
     "mongodb": "^6.9.0",
     "typescript": "^5.6.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.11.0",
+    "eslint": "^9.11.0",
+    "globals": "^15.9.0",
+    "typescript-eslint": "^8.6.0"
   }
 }

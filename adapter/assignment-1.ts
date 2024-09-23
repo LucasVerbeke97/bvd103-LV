@@ -1,5 +1,3 @@
-import { formatDiagnostic } from "typescript";
-
 require('dotenv').config();
 
 const {MongoClient} = require("mongodb");
