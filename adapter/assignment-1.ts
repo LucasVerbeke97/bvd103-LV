@@ -1,5 +1,7 @@
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 require('dotenv').config();
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const {MongoClient} = require("mongodb");
 
 const uri = process.env.MONGODB_URI || "";
