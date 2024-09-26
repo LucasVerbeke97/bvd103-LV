@@ -23,14 +23,18 @@ export interface Filter {
 async function listBooks (filters?: Filter[]): Promise<Book[]> {
   const books = await previous_assignment.listBooks(filters);
 
-  return books.filter(book => 
-    filters.some(filter => 
-      (filter.from === undefined || book.price >= filter.from) &&
-      (filter.to === undefined || book.price <= filter.to) &&
-      (filter.name === undefined || book.name.toLowerCase().includes(filter.name.toLowerCase())) &&
-      (filter.author === undefined || book.author.toLowerCase().includes(filter.author.toLowerCase()))
-    )
-  );
+  if(filters){
+    return books.filter(book => 
+      filters.some(filter => 
+        (filter.from === undefined || book.price >= filter.from) &&
+        (filter.to === undefined || book.price <= filter.to) &&
+        (filter.name === undefined || book.name.toLowerCase().includes(filter.name.toLowerCase())) &&
+        (filter.author === undefined || book.author.toLowerCase().includes(filter.author.toLowerCase()))
+      )
+    );
+  }
+  else
+    return books;
 }
 
 async function createOrUpdateBook (book: Book): Promise<BookID> {
