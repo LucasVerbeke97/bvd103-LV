@@ -1,4 +1,3 @@
-import { isAwaitExpression } from 'typescript'
 import previous_assignment from './assignment-2'
 
 export type BookID = string
@@ -23,9 +22,15 @@ export interface Filter {
 // Within a single filter, a book would need to match all the given conditions
 async function listBooks (filters?: Filter[]): Promise<Book[]> {
   const books = await previous_assignment.listBooks(filters);
-  
 
-  return books;
+  return books.filter(book => 
+    filters.some(filter => 
+      (filter.from === undefined || book.price >= filter.from) &&
+      (filter.to === undefined || book.price <= filter.to) &&
+      (filter.name === undefined || book.name.toLowerCase().includes(filter.name.toLowerCase())) &&
+      (filter.author === undefined || book.author.toLowerCase().includes(filter.author.toLowerCase()))
+    )
+  );
 }
 
 async function createOrUpdateBook (book: Book): Promise<BookID> {
