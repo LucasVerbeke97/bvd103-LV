@@ -1,7 +1,9 @@
 import assignment1 from "./assignment-1";
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 require('dotenv').config();//configs the dotenv file
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const {MongoClient} = require("mongodb");
 const uri = process.env.MONGODB_URI || "";//gets link to db from dotenv
 

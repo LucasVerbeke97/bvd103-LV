@@ -1,36 +1,48 @@
 import Koa from 'koa';
 import Router from 'koa-router';
 import bodyParser from 'koa-bodyparser';
-import assignment from './assignment-2';
+import assignment from './assignment-3';
 
 const app = new Koa();
 const router = new Router();
 
-app.use(bodyParser()); 
+app.use(bodyParser());
 
-router.get('/', async (ctx: { query: { minPrice: string; maxPrice: string; }; body: string; }) => {
+router.get('/', async (ctx: { query: { minPrice: string; maxPrice: string; title: string; author: string }; body: string }) => {
     const minPrice = parseFloat(ctx.query.minPrice as string) || 0;
     const maxPrice = parseFloat(ctx.query.maxPrice as string) || Infinity;
+    const titleFilter = (ctx.query.title || '').toLowerCase();
+    const authorFilter = (ctx.query.author || '').toLowerCase();
 
-    //form for filtering books
-    let form = `<h1>Books</h1>
+    // form for filtering books
+    const filterForm = `<h1>Books</h1>
         <form method="get">
         <label for="minPrice">Min Price:</label>
         <input type="number" name="minPrice" step="0.01" value="${minPrice || ''}" />
         <label for="maxPrice">Max Price:</label>
         <input type="number" name="maxPrice" step="0.01" value="${maxPrice || ''}" />
+        <label for="title">Title:</label>
+        <input type="text" name="title" value="${titleFilter || ''}" />
+        <label for="author">Author:</label>
+        <input type="text" name="author" value="${authorFilter || ''}" />
         <button type="submit">Filter</button>
         </form>
     `;
 
-    //creating book table
+    // creating book table
     let bookList = `<table border="1" cellpadding="5" cellspacing="0">
         <thead><tr>
         <th>Title</th><th>Author</th><th>Description</th><th>Cover</th>
         </tr></thead><tbody>`;
 
-    let books = await assignment.listBooks([{ from: minPrice, to: maxPrice }]);
-    books.forEach((book) => {
+    // Fetching and filtering the books based on price, title, and author
+    const books = await assignment.listBooks([{ from: minPrice, to: maxPrice }]);
+    const filteredBooks = books.filter(book => 
+        (book.name.toLowerCase().includes(titleFilter)) && 
+        (book.author.toLowerCase().includes(authorFilter))
+    );
+
+    filteredBooks.forEach((book) => {
         bookList += `
         <tr>
             <td>${book.name}</td>
@@ -39,20 +51,20 @@ router.get('/', async (ctx: { query: { minPrice: string; maxPrice: string; }; bo
             <td>
         `
 
-        //checks if book id is not undefined then adds it if so
-        if(book.id){
-            bookList+=`
+        // Checks if book id is not undefined then adds it if so
+        if (book.id) {
+            bookList += `
             ID: ${book.id}
             `
         }
-        bookList+=`
+        bookList += `
             <img src="${book.image}" alt="Book Cover" width="200" height="300">
             <center>$${book.price}</center></td>
         </tr>`;
-        });
-    bookList += `</tbody></table>`; //finishing book table
+    });
+    bookList += `</tbody></table>`; // Finishing book table
 
-    //form to add or modify book
+    // form to add or modify book
     const addBook = `
         <h1>Add New Book</h1>
         <form action="/add-book" method="post">
@@ -65,7 +77,7 @@ router.get('/', async (ctx: { query: { minPrice: string; maxPrice: string; }; bo
             <button type="submit">Add/Update Book</button>
         </form>`;
 
-    //form for removing book
+    // form for removing book
     const removeBook = `
         <h1>Remove Book</h1>
         <form action="/remove-book" method="post">
@@ -73,11 +85,11 @@ router.get('/', async (ctx: { query: { minPrice: string; maxPrice: string; }; bo
             <button type="submit">Remove Book</button>
         </form>`;
 
-    ctx.body = form + bookList + addBook + removeBook;
+    ctx.body = filterForm + bookList + addBook + removeBook;
 });
 
-//calls function to add or update book the redirects to /
-router.post('/add-book', async (ctx: { request: { body: { id: any; name: any; author: any; description: any; price: any; link: any; }; }; redirect: (arg0: string) => void; body: string; }) => {
+// calls function to add or update book then redirects to /
+router.post('/add-book', async (ctx: { request: { body: { id: string; name: string; author: string; description: string; price: number; link: string }; }; redirect: (arg0: string) => void; body: string }) => {
     const { id, name, author, description, price, link } = ctx.request.body;
     try {
         await assignment.createOrUpdateBook({
@@ -85,7 +97,7 @@ router.post('/add-book', async (ctx: { request: { body: { id: any; name: any; au
             name,
             author,
             description,
-            price: parseFloat(price),
+            price: price,
             image: link
         });
         ctx.redirect('/');
@@ -95,8 +107,8 @@ router.post('/add-book', async (ctx: { request: { body: { id: any; name: any; au
     }
 });
 
-//calls function to delete book the redirects to /
-router.post('/remove-book', async (ctx: { request: { body: { id: any; }; }; redirect: (arg0: string) => void; body: string; }) => {
+// calls function to delete book then redirects to /
+router.post('/remove-book', async (ctx: { request: { body: { id: string }; }; redirect: (arg0: string) => void; body: string }) => {
     const { id } = ctx.request.body;
     try {
         await assignment.removeBook(id);
@@ -108,7 +120,7 @@ router.post('/remove-book', async (ctx: { request: { body: { id: any; }; }; redi
 });
 
 app.use(router.routes());
-app.use(router.allowedMethods()); 
+app.use(router.allowedMethods());
 
 app.listen(3000);
 
