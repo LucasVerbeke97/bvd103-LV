@@ -4,7 +4,7 @@
   "description": "This is a template repository for the first assignment in BVD 103 at McMaster Continuing Education.",
   "main": "index.ts",
   "scripts": {
-    "lint": "eslint 'src/**/*.{js,ts}'",
+    "lint": "eslint",
     "start-server": "tsx adapter/index.ts",
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
