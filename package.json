@@ -4,6 +4,7 @@
   "description": "This is a template repository for the first assignment in BVD 103 at McMaster Continuing Education.",
   "main": "index.ts",
   "scripts": {
+    "lint": "eslint 'src/**/*.{js,ts}'",
     "start-server": "tsx adapter/index.ts",
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -23,14 +24,16 @@
     "typescript": "^5.6.2"
   },
   "devDependencies": {
-    "@eslint/js": "^9.11.0",
+    "@eslint/js": "^9.11.1",
+    "@types/gulp": "^4.0.17",
     "@types/koa-bodyparser": "^4.3.12",
     "@types/koa-router": "^7.4.8",
     "@types/node": "^22.7.4",
-    "eslint": "^9.11.0",
+    "eslint": "^9.11.1",
     "globals": "^15.9.0",
     "gulp": "^4.0.2",
+    "gulp-eslint": "^6.0.0",
     "nodemon": "^3.1.7",
-    "typescript-eslint": "^8.6.0"
+    "typescript-eslint": "^8.7.0"
   }
 }
