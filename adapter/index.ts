@@ -6,33 +6,45 @@ import assignment from './assignment-3';
 const app = new Koa();
 const router = new Router();
 
+// Use body parser middleware
 app.use(bodyParser());
 
-router.get('/', async (ctx: { query: { minPrice: string; maxPrice: string; title: string; author: string }; body: string }) => {
+// Define the structure of the request body for adding/updating a book
+interface BookRequestBody {
+    id?: string; // id is optional when adding a new book
+    name: string;
+    author: string;
+    description: string;
+    price: number;
+    link: string; // the URL for the book cover image
+}
+
+// Define the main route
+router.get('/', async (ctx) => {
     const minPrice = parseFloat(ctx.query.minPrice as string) || 0;
     const maxPrice = parseFloat(ctx.query.maxPrice as string) || Infinity;
-    const titleFilter = (ctx.query.title || '').toLowerCase();
-    const authorFilter = (ctx.query.author || '').toLowerCase();
+    const titleFilter = Array.isArray(ctx.query.title) ? ctx.query.title.join(' ').toLowerCase() : (ctx.query.title || '').toLowerCase();
+    const authorFilter = Array.isArray(ctx.query.author) ? ctx.query.author.join(' ').toLowerCase() : (ctx.query.author || '').toLowerCase();
 
-    // form for filtering books
+    // Form for filtering books
     const filterForm = `<h1>Books</h1>
         <form method="get">
-        <label for="minPrice">Min Price:</label>
-        <input type="number" name="minPrice" step="0.01" value="${minPrice || ''}" />
-        <label for="maxPrice">Max Price:</label>
-        <input type="number" name="maxPrice" step="0.01" value="${maxPrice || ''}" />
-        <label for="title">Title:</label>
-        <input type="text" name="title" value="${titleFilter || ''}" />
-        <label for="author">Author:</label>
-        <input type="text" name="author" value="${authorFilter || ''}" />
-        <button type="submit">Filter</button>
+            <label for="minPrice">Min Price:</label>
+            <input type="number" name="minPrice" step="0.01" value="${minPrice || ''}" />
+            <label for="maxPrice">Max Price:</label>
+            <input type="number" name="maxPrice" step="0.01" value="${maxPrice || ''}" />
+            <label for="title">Title:</label>
+            <input type="text" name="title" value="${titleFilter || ''}" />
+            <label for="author">Author:</label>
+            <input type="text" name="author" value="${authorFilter || ''}" />
+            <button type="submit">Filter</button>
         </form>
     `;
 
-    // creating book table
+    // Creating book table
     let bookList = `<table border="1" cellpadding="5" cellspacing="0">
         <thead><tr>
-        <th>Title</th><th>Author</th><th>Description</th><th>Cover</th>
+            <th>Title</th><th>Author</th><th>Description</th><th>Cover</th>
         </tr></thead><tbody>`;
 
     // Fetching and filtering the books based on price, title, and author
@@ -49,13 +61,13 @@ router.get('/', async (ctx: { query: { minPrice: string; maxPrice: string; title
             <td>${book.author}</td>
             <td>${book.description}</td>
             <td>
-        `
+        `;
 
         // Checks if book id is not undefined then adds it if so
         if (book.id) {
             bookList += `
             ID: ${book.id}
-            `
+            `;
         }
         bookList += `
             <img src="${book.image}" alt="Book Cover" width="200" height="300">
@@ -64,7 +76,7 @@ router.get('/', async (ctx: { query: { minPrice: string; maxPrice: string; title
     });
     bookList += `</tbody></table>`; // Finishing book table
 
-    // form to add or modify book
+    // Form to add or modify book
     const addBook = `
         <h1>Add New Book</h1>
         <form action="/add-book" method="post">
@@ -77,7 +89,7 @@ router.get('/', async (ctx: { query: { minPrice: string; maxPrice: string; title
             <button type="submit">Add/Update Book</button>
         </form>`;
 
-    // form for removing book
+    // Form for removing book
     const removeBook = `
         <h1>Remove Book</h1>
         <form action="/remove-book" method="post">
@@ -88,17 +100,18 @@ router.get('/', async (ctx: { query: { minPrice: string; maxPrice: string; title
     ctx.body = filterForm + bookList + addBook + removeBook;
 });
 
-// calls function to add or update book then redirects to /
-router.post('/add-book', async (ctx: { request: { body: { id: string; name: string; author: string; description: string; price: number; link: string }; }; redirect: (arg0: string) => void; body: string }) => {
-    const { id, name, author, description, price, link } = ctx.request.body;
+// Route to add or update a book
+router.post('/add-book', async (ctx) => {
+    const body: BookRequestBody = ctx.request.body as BookRequestBody; // Cast to the defined interface
+    const { id, name, author, description, price, link } = body;
     try {
         await assignment.createOrUpdateBook({
             id,
             name,
             author,
             description,
-            price: price,
-            image: link
+            price,
+            image: link,
         });
         ctx.redirect('/');
     } catch (error) {
@@ -107,9 +120,10 @@ router.post('/add-book', async (ctx: { request: { body: { id: string; name: stri
     }
 });
 
-// calls function to delete book then redirects to /
-router.post('/remove-book', async (ctx: { request: { body: { id: string }; }; redirect: (arg0: string) => void; body: string }) => {
-    const { id } = ctx.request.body;
+// Route to remove a book
+router.post('/remove-book', async (ctx) => {
+    const body = ctx.request.body as { id: string }; // Cast to an object with id
+    const { id } = body;
     try {
         await assignment.removeBook(id);
         ctx.redirect('/');
@@ -119,9 +133,11 @@ router.post('/remove-book', async (ctx: { request: { body: { id: string }; }; re
     }
 });
 
+// Use the router
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-app.listen(3000);
-
-export default assignment;
+// Start the server
+app.listen(3000, () => {
+    console.log('Server is running on http://localhost:3000');
+});
