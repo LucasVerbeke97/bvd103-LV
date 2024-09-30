@@ -5,6 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "start-server": "tsx adapter/index.ts",
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --exec tsx adapter/index.ts"
   },
@@ -23,9 +24,11 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.11.0",
+    "@types/node": "^22.7.4",
     "eslint": "^9.11.0",
     "globals": "^15.9.0",
     "nodemon": "^3.1.7",
-    "typescript-eslint": "^8.6.0"
+    "typescript-eslint": "^8.6.0",
+    "gulp": "^4.0.2"
   }
 }
