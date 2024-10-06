@@ -19,10 +19,21 @@ export interface Filter {
   author?: string
 };
 
+
+
+import { MongoClient } from "mongodb"
+const uri = process.env.MONGODB_URI || "";//gets link to db from dotenv
+
+if (!uri) {
+    throw new Error('MongoDB URI not found in environment variables.');
+}
+
+const client = new MongoClient(uri);//connects to the mongoDB
+
 // If multiple filters are provided, any book that matches at least one of them should be returned
 // Within a single filter, a book would need to match all the given conditions
 async function listBooks (filters?: Filter[]): Promise<Book[]> {
-  throw new Error("Todo")
+  return previous_assignment.listBooks(filters);
 }
 
 async function createOrUpdateBook (book: Book): Promise<BookID> {
@@ -33,8 +44,31 @@ async function removeBook (book: BookID): Promise<void> {
   await previous_assignment.removeBook(book)
 }
 
-async function lookupBookById (book: BookID): Promise<Book> {
-  throw new Error("Todo")
+async function lookupBookById (book: BookID): Promise<Book | null> {
+
+  const database = client.db('McMasterful-Books');
+  const collection = database.collection('Books');
+
+  let bookToFind: Book;
+
+  const bookExists = await collection.findOne({id: book});
+
+
+  if(bookExists){
+      bookToFind = {
+        id: bookExists.id,
+        name: bookExists.name,
+        author: bookExists.author,
+        description: bookExists.description,
+        price: bookExists.price,
+        image: bookExists.image
+
+    };
+    return bookToFind;
+  }
+
+  return null;
+
 }
 
 export type ShelfId = string
