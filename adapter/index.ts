@@ -1,7 +1,7 @@
 import Koa from 'koa';
 import Router from 'koa-router';
 import bodyParser from 'koa-bodyparser';
-import assignment from './assignment-3';
+import assignment from './assignment-4';
 
 const app = new Koa();
 const router = new Router();
