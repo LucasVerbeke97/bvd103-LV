@@ -49,6 +49,7 @@ async function lookupBookById (book: BookID): Promise<Book | null> {
   const database = client.db('McMasterful-Books');
   const collection = database.collection('Books');
 
+  
   let bookToFind: Book;
 
   const bookExists = await collection.findOne({id: book});
