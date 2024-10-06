@@ -5,10 +5,10 @@
   "main": "index.ts",
   "scripts": {
     "lint": "eslint",
-    "start-server": "tsx adapter/index.ts",
+    "start-server": "tsx src/index.ts",
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon --exec tsx adapter/index.ts"
+    "dev": "nodemon --exec tsx src/index.ts"
   },
   "keywords": [],
   "author": "",
