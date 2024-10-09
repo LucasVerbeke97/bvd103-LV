@@ -45,7 +45,7 @@ router.get('/', async (ctx) => {
     // Creating book table
     let bookList = `<table border="1" cellpadding="5" cellspacing="0">
         <thead><tr>
-            <th>Title</th><th>Author</th><th>Description</th><th>Cover</th>
+            <th>Title</th><th>Author</th><th>Description</th><th></th><th>Cover & Price</th>
         </tr></thead><tbody>`;
 
     // Fetching and filtering the books based on price, title, and author
@@ -75,6 +75,10 @@ router.get('/', async (ctx) => {
             Stock: ${book.stock}
             `;
         }
+        bookList+=`
+        </td>
+        <td>
+        `
         bookList += `
             <img src="${book.image}" alt="Book Cover" width="200" height="300">
             <center>$${book.price}</center></td>
@@ -92,6 +96,7 @@ router.get('/', async (ctx) => {
             <label for="description">Description:</label><textarea id="description" name="description" required></textarea>
             <label for="price">Price:</label><input type="number" id="price" name="price" step="0.01" required>
             <label for="link">Link:</label><input type="url" id="link" name="link" required>
+            <label for="stock">Stock:</label><input type="text" id="stock" name="stock">
             <button type="submit">Add/Update Book</button>
         </form>`;
 
@@ -117,7 +122,7 @@ router.get('/', async (ctx) => {
 // Route to add or update a book
 router.post('/add-book', async (ctx) => {
     const body: BookRequestBody = ctx.request.body as BookRequestBody; // Cast to the defined interface
-    const { id, name, author, description, price, link } = body;
+    const { id, name, author, description, price, link, stock } = body;
     try {
         await assignment.createOrUpdateBook({
             id,
@@ -126,6 +131,7 @@ router.post('/add-book', async (ctx) => {
             description,
             price,
             image: link,
+            stock
         });
         ctx.redirect('/');
     } catch (error) {

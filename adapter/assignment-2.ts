@@ -22,6 +22,7 @@ export interface Book {
     description: string,
     price: number,
     image: string,
+    stock?: number
 };
 
 async function listBooks(filters?: Array<{from?: number, to?: number}>) : Promise<Book[]>{
@@ -43,7 +44,8 @@ async function createOrUpdateBook(book: Book): Promise<BookID> {
                 author: book.author,
                 description: book.description,
                 price: book.price,
-                image: book.image
+                image: book.image,
+                stock: book.stock
             }
         };
 
