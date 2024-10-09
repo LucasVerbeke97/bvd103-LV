@@ -17,6 +17,7 @@ interface BookRequestBody {
     description: string;
     price: number;
     link: string; // the URL for the book cover image
+    stock?: number
 }
 
 // Define the main route
@@ -69,6 +70,11 @@ router.get('/', async (ctx) => {
             ID: ${book.id}
             `;
         }
+        if (book.stock) {
+            bookList += `
+            Stock: ${book.stock}
+            `;
+        }
         bookList += `
             <img src="${book.image}" alt="Book Cover" width="200" height="300">
             <center>$${book.price}</center></td>
@@ -97,7 +103,15 @@ router.get('/', async (ctx) => {
             <button type="submit">Remove Book</button>
         </form>`;
 
-    ctx.body = filterForm + bookList + addBook + removeBook;
+    const orderBook = `
+        <h1>Order a Book</h1>
+        <form action="/order-book" method="post">
+            <label for="id">Book ID:</label><input type="text" id="id" name="id" required>
+            <label for="id">Quantity:</label><input type="text" id="quantity" name="quantity" required>
+            <button type="submit">Order Book</button>
+        </form>`;
+
+    ctx.body = filterForm + bookList + addBook + removeBook+orderBook;
 });
 
 // Route to add or update a book

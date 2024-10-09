@@ -9,6 +9,7 @@ export interface Book {
   description: string
   price: number
   image: string
+  stock?: number
 };
 
 export interface Filter {

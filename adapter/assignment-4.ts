@@ -1,4 +1,3 @@
-/*
 import previous_assignment from './assignment-3'
 
 export type BookID = string
@@ -34,7 +33,10 @@ const client = new MongoClient(uri);//connects to the mongoDB
 // If multiple filters are provided, any book that matches at least one of them should be returned
 // Within a single filter, a book would need to match all the given conditions
 async function listBooks (filters?: Filter[]): Promise<Book[]> {
-  return previous_assignment.listBooks(filters);
+  if(filters)
+    return await previous_assignment.listBooks(filters);
+  else
+    return await previous_assignment.listBooks();
 }
 
 async function createOrUpdateBook (book: Book): Promise<BookID> {
@@ -76,6 +78,7 @@ async function lookupBookById (book: BookID): Promise<Book | null> {
 export type ShelfId = string
 export type OrderId = string
 
+/*
 async function placeBooksOnShelf (bookId: BookID, numberOfBooks: number, shelf: ShelfId): Promise<void> {
   throw new Error("Todo")
 }
@@ -95,6 +98,7 @@ async function fulfilOrder (order: OrderId, booksFulfilled: Array<{ book: BookID
 async function listOrders (): Promise<Array<{ orderId: OrderId, books: Record<BookID, number> }>> {
   throw new Error("Todo")
 }
+  */
 
 const assignment = 'assignment-4'
 
@@ -103,11 +107,10 @@ export default {
   createOrUpdateBook,
   removeBook,
   listBooks,
-  placeBooksOnShelf,
-  orderBooks,
-  findBookOnShelf,
-  fulfilOrder,
-  listOrders,
+  //placeBooksOnShelf,
+  //orderBooks,
+  //findBookOnShelf,
+  //fulfilOrder,
+  //listOrders,
   lookupBookById
 }
-  */

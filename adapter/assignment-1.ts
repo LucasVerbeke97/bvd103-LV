@@ -15,14 +15,14 @@ const client = new MongoClient(uri);
 export type BookID = string;
 
 export interface Book {
-    id?: BookID,
-    name: string,
-    author: string,
-    description: string,
-    price: number,
-    image: string,
-};
-
+    id?: BookID
+    name: string
+    author: string
+    description: string
+    price: number
+    image: string
+    stock?: number
+  };
 
 // If you have multiple filters, a book matching any of them is a match.
 async function listBooks(filters?: Array<{from?: number, to?: number}>) : Promise<Book[]>{
@@ -38,6 +38,9 @@ async function listBooks(filters?: Array<{from?: number, to?: number}>) : Promis
             const book: Book = {name: bookList[n].name, author: bookList[n].author, description: bookList[n].description, price: bookList[n].price, image: bookList[n].image};
             if(bookList[n].id){
                 book.id = bookList[n].id;
+            }
+            if(bookList[n].id){
+                book.stock = bookList[n].stock;
             }
             if (filters && filters.length>0){
                 for (let i=0; i<filters.length; i++){
