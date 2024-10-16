@@ -65,8 +65,8 @@ async function lookupBookById (book: BookID): Promise<Book | null> {
         author: bookExists.author,
         description: bookExists.description,
         price: bookExists.price,
-        image: bookExists.image
-
+        image: bookExists.image,
+        stock: bookExists.stock
     };
     return bookToFind;
   }
@@ -78,9 +78,12 @@ async function lookupBookById (book: BookID): Promise<Book | null> {
 export type ShelfId = string
 export type OrderId = string
 
-/*
+
 async function placeBooksOnShelf (bookId: BookID, numberOfBooks: number, shelf: ShelfId): Promise<void> {
-  throw new Error("Todo")
+  const database = client.db('McMasterful-Books');
+  const collection = database.collection('shelf');
+
+  
 }
 
 async function orderBooks (order: BookID[]): Promise<{ orderId: OrderId }> {
@@ -96,9 +99,20 @@ async function fulfilOrder (order: OrderId, booksFulfilled: Array<{ book: BookID
 }
 
 async function listOrders (): Promise<Array<{ orderId: OrderId, books: Record<BookID, number> }>> {
-  throw new Error("Todo")
+  const database = client.db('McMasterful-Books');
+  const collection = database.collection('orders');
+
+  const oc = await collection.find({}).toArray();
+
+  let orders;
+
+  for(let i=0; i<oc.length; i++){
+    orders[i].orderID = oc[i]._id.toString;
+  }
+
+  return orders;
 }
-  */
+
 
 const assignment = 'assignment-4'
 
@@ -107,10 +121,10 @@ export default {
   createOrUpdateBook,
   removeBook,
   listBooks,
-  //placeBooksOnShelf,
-  //orderBooks,
-  //findBookOnShelf,
-  //fulfilOrder,
-  //listOrders,
+  placeBooksOnShelf,
+  orderBooks,
+  findBookOnShelf,
+  fulfilOrder,
+  listOrders,
   lookupBookById
 }
